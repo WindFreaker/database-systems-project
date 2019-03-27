@@ -4,20 +4,43 @@
     
     <style>
         
-        .page {
-            max-width: 1000px;
-            margin: auto;
-            //border: 2px solid red;
+        ::placeholder {
+            color: lightgreen;
+            opacity: 0.8;
         }
         
-        .header {
-            background-color: lightskyblue;
-            border: 3px solid black;
+        ::selection {
+            color: white;
+            background: rgb(44, 45, 48);
+    
+        }
+        
+        .page {
+            background-color: rgb(44, 45, 48);
+            color: lightgreen;
+            max-width: 1000px;
+            margin: auto;
+        }
+        
+        .seperator {
+            background-color: black;
+            color: lightgreen;
+            padding: 10px;
+        }
+        
+        .seperator.header {
+            border: 3px solid lightgreen;
             border-radius: 15px;
-            color: black;
             margin: 10px;
             margin-bottom: 3px;
-            padding: 10px;
+        }
+        
+        .seperator.box {
+            border: 2px solid lightgreen;
+            border-radius: 8px;
+            margin: 5px;
+            flex: 1 1 auto;
+            min-width: 300px;
         }
         
         .content {
@@ -26,33 +49,49 @@
             flex-wrap: wrap;
             margin-left: 10px;
             margin-right: 10px;
-            //border: 2px solid red;
-        }
-    
-        .box {
-            background-color: lightskyblue;
-            border: 2px solid black;
-            border-radius: 8px;
-            color: black;
-            margin: 5px;
-            padding: 10px;
-            flex: 1 1 auto;
-            min-width: 45.2%;
         }
         
-        .infoBox {
-            background-color: white;
-            border: 2px solid black;
-            flex: 1 1 auto;
+        .interface {
+            width: 100%;
+            background-color: rgb(44, 45, 48);
+            color: lightgreen;
+            padding: 12px 20px;
+            box-sizing: border-box;
+            border: 1px solid lightgreen;
+            border-radius: 2px;
+            
+        }
+        
+        .interface:focus {
+            background-color: black;
+        }
+        
+        .interface.txtfield {
+            outline: none;
+        }
+        
+        .interface.txtarea {
+            height: 20%;
+            outline: none;
+            resize: vertical;
+        }
+        
+        .interface.button {
+            margin: 5px;
+            width: auto;
+        }
+        
+        .interface.selector {
+            opacity: 0.8;
         }
     
     </style>
     
     <body class="page">
     
-        <div id="infoBox" class="header">
+        <div id="infoBox" class="seperator header">
         
-            <div class="content" style="border:none">
+            <div class="content">
             
                 <div style="flex: 1 1 auto; margin-right: 3px;">
                 
@@ -74,49 +113,49 @@
         
         <div class="content">
         
-            <div id="searchBox" class="box">
+            <div id="searchBox" class="seperator box">
         
                 <h3>Search database</h3>
                 
                 <form action="/search.php">
                 
-                    Enter field 1: <input type="text" name="condition1"> <br>
-                    Enter field 2: <input type="text" name="condition2"> <br>
+                    <input type="text" name="condition1" class="interface txtfield" placeholder="First name..."> <br> <br>
+                    <input type="text" name="condition2" class="interface txtfield" placeholder="Last name..."> <br>
                     <input type= "radio" name="database" value="student"> Student <br>
                     <input type= "radio" name="database" value="prof"> Professor <br>
                     <input type= "radio" name="database" value="faculty"> Faculty <br>
-                    <input type="submit">
+                    <input type="submit" value="Something" class="interface button">
                 
                 </form>
         
             </div>
         
-            <div id="modifyBox" class="box">
+            <div id="modifyBox" class="seperator box">
                 
                 <h3>Modify database</h3>
                 
                 <form action="/modify.php">
                 
-                    <select name="database" size="5">
-                        <option value="Student">Student</option>
-                        <option value="Professor">Professor</option>
-                        <option value="Staff">Staff</option>
+                    <select id="database" name="database" class="interface selector">
+                        <option value="" disabled selected hidden>Select a database...</option>
+                        <option value="student">Student</option>
+                        <option value="professor">Professor</option>
+                        <option value="staff">Staff</option>
                     </select>
                     <br />
-                    <input type="submit" value="Select Database">
+                    <input type="submit" value="Select Database" class="interface button">
                     
                 </form>
                 
             </div>
             
-            <div id="bruteBox" class="box">
+            <div id="bruteBox" class="seperator box">
             
                 <h3>Text Console</h3>
                 <form>
                     
-                    <textarea name="bruteForce" style="width:100%; height:20%;"></textarea>
-                    
-                    <input type="submit" value="Submit Commands">
+                    <textarea name="bruteForce" class="interface txtarea" placeholder="Write SQL here..."></textarea> <br>
+                    <input type="submit" value="Submit SQL Code" class="interface button">
                     
                 </form>
                 
