@@ -1,0 +1,79 @@
+   <body class="page">
+    
+        <div id="infoBox" class="seperator header">
+        
+            <div class="content">
+            
+                <div style="flex: 1 1 auto; margin-right: 3px;">
+                
+                    <h2>London?</h2>
+                    <p>This should be just a normal line.</p>
+                
+                </div>
+                
+                <div style="flex: 2 1 auto;">
+                
+                    This box is for all the information pertaining to the database,
+                    <p>that cannot be summarized and fit into the small box on the left.</p>
+                
+                </div>
+                
+            </div>
+            
+        </div>
+        
+        <div class="content">
+        
+            <div id="searchBox" class="seperator box">
+        
+                <h3>Search database</h3>
+                
+                <form action="/search.php">
+                
+                    <input type="text" name="condition1" class="interface txtfield" placeholder="First name...">
+                    <input type="text" name="condition2" class="interface txtfield" placeholder="Last name...">
+                    <br>
+                    <input type= "radio" name="database" value="student"> Student
+                    <input type= "radio" name="database" value="prof"> Professor
+                    <input type= "radio" name="database" value="faculty"> Faculty
+                    <br>
+                    <input type="submit" value="Something" class="interface button">
+                
+                </form>
+        
+            </div>
+        
+            <div id="modifyBox" class="seperator box">
+                
+                <h3>Modify database</h3>
+                
+                <form action="/modify.php">
+                
+                    <select id="database" name="database" class="interface selector">
+                        <option value="" disabled selected hidden>Select a database...</option>
+                        <option value="student">Student</option>
+                        <option value="professor">Professor</option>
+                        <option value="staff">Staff</option>
+                    </select>
+                    <br />
+                    <input type="submit" value="Select Database" class="interface button">
+                    
+                </form>
+                
+            </div>
+            
+            <div id="bruteBox" class="seperator box">
+            
+                <h3>Text Console</h3>
+                <form>
+                    
+                    <textarea name="bruteForce" class="interface txtarea" placeholder="Write SQL here..."></textarea> <br>
+                    <input type="submit" value="Submit SQL Code" class="interface button">
+                    
+                </form>
+                
+            </div>
+            
+        </div>
+    
+    </body>
