@@ -1,18 +1,11 @@
-function changeDB(selection) {
-                
-    document.getElementById("text").innerHTML = selection;
+function changeDatabase(selection) {
+             
+    document.getElementById("tableSelector").style.visibility = "visible";
+    
     switch(selection) {
     
-        case "a1":
-            document.getElementById("dbInfo").innerHTML = "abraham";
-            break;
-                        
-        case "a2":
-            document.getElementById("dbInfo").innerHTML = "no";
-            break;
-                        
-        case "a3":
-            document.getElementById("dbInfo").innerHTML = "hehe";
+        case "project":
+            //something
             break;
                         
         default:
@@ -20,4 +13,24 @@ function changeDB(selection) {
             
     }
                 
+}
+
+function changeTable(selection) {
+    
+    //for project tables
+    switch(selection) {
+            
+        case "student":
+            //something
+            break;
+        
+        case "payments":
+            //something
+            break;
+            
+        default:
+            //something
+            
+    }
+    
 }

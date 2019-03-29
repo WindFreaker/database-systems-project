@@ -22,10 +22,6 @@
             padding: 0px;
         }
         
-        div {
-            //border: 1px solid var(--main-color);
-        }
-        
         select {
             background-color: var(--input-color);
             color: white;
@@ -38,6 +34,11 @@
         
         select:hover {
             background-color: var(--lighter-color);
+        }
+        
+        header {
+            font-weight: bold;
+            text-align: center;
         }
         
         .navbar {
@@ -54,7 +55,9 @@
         .content {
             margin-left: 200px;
             height: auto;
-            display: flex;
+            display: grid;
+            grid-column-gap: 0px;
+            grid-row-gap: 0px;
             flex-wrap: wrap;
         }
         
@@ -63,15 +66,16 @@
             padding: 12px;
             border-radius: 10px;
             margin: 10px;
+            margin-bottom: 0px;
             width: auto;
             height: 200px;
             flex: auto;
         }
         
         .credits {
-            position: absolute;
-            bottom: 30px;
-            width: auto;
+            padding: 12px;
+            text-align: center;
+            color: gray;
         }
         
         @media (max-width: 700px) {
@@ -80,6 +84,7 @@
                 width: 100%;
                 height: auto;
                 position: relative;
+                /* PUT SOMETHING HERE TO FIX THE SMALL WIDTH SCROLLBAR */
             }
             
             .content {
@@ -108,27 +113,25 @@
     
         <div class="navbar">
     
-            Database
-            <select onchange="changeDB(value)">
-                <option value="" disabled selected hidden>Select database...</option>
-                <option value="a1">Student Information</option>
-                <option value="a2">Professors</option>
-                <option value="a3">All Faculty and Staff</option>
-            </select>
+            <div id="databaseSelector">
             
-            Selector 2
-            <select>
-                <option value="" disabled selected hidden>Select option...</option>
-                <option value="x">oof</option>
-                <option value="y">electric boogaloo</option>
-                <option value="z">mickey mouse</option>
-            </select>
+                Select Database
+                <select onchange="changeDatabase(value)">
+                    <option value="" disabled selected hidden>Select database...</option>
+                    <option value="project">CSCI 3432 Project</option>
+                </select>
             
-            <div class="credits">
+            </div>
             
-                Project made by Austin Farmer, Amber Moszenski, Caleb Quinn, Hayes Barber, and Josh Black
-                <br> <br> Interface created by Austin Farmer
-                <br> <br> Special thanks to Shawn Boudreaux
+            <div id="tableSelector" style="visibility: hidden">
+            
+                Select Table
+                <select onchange="changeTable(value)">
+                    <option value="" disabled selected hidden>Select table...</option>
+                    <option value="student">nothing</option>
+                    <option value="athletes">electric boogaloo</option>
+                    <option value="payments">mickey mouse</option>
+                </select>
             
             </div>
     
@@ -136,42 +139,46 @@
         
         <div class="content">
         
-            <div class="section" id="dbInfo">
+            <div class="section" id="info">
                 
-                
+                <header>Information</header>
             
             </div>
             
-            <div class="section">
+            <div class="section" id="modify">
+                
+               <header>Modify</header>
             
                 <p id="text">Test text!</p>
             
             </div>
             
-            <div class="section">
+            <div class="section" id="brute">
             
-            
-            
-            </div>
-            
-            <div class="section">
-            
-            
+                <header>Console</header>
             
             </div>
             
             <div class="section">
             
-            
+                <header>Something</header>
             
             </div>
             
             <div class="section">
             
-            
+                <header>Toost</header>
             
             </div>
-        
+            
+            <div class="credits">
+            
+                Group project for Dr. J's CSCI 3432-A class
+                <br> Project by Austin Farmer, Amber Moszenski, Caleb Quinn, Hayes Barber, and Josh Black
+                <br> Web interface created by Austin Farmer (special thanks to Shawn Boudreaux)
+            
+            </div>
+            
         </div>
         
     </body>
