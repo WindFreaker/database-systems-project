@@ -23,7 +23,7 @@
         }
         
         div {
-            border: 1px solid var(--main-color);
+            //border: 1px solid var(--main-color);
         }
         
         select {
@@ -37,7 +37,7 @@
         }
         
         select:hover {
-            background-color: var(--background-color);
+            background-color: var(--lighter-color);
         }
         
         .navbar {
@@ -54,6 +54,8 @@
         .content {
             margin-left: 200px;
             height: auto;
+            display: flex;
+            flex-wrap: wrap;
         }
         
         .section {
@@ -63,6 +65,13 @@
             margin: 10px;
             width: auto;
             height: 200px;
+            flex: auto;
+        }
+        
+        .credits {
+            position: absolute;
+            bottom: 30px;
+            width: auto;
         }
         
         @media (max-width: 700px) {
@@ -75,6 +84,10 @@
             
             .content {
                 margin-left: 0px;
+            }
+            
+            .credits {
+                display: none;
             }
             
         }
@@ -102,6 +115,22 @@
                 <option value="a2">Professors</option>
                 <option value="a3">All Faculty and Staff</option>
             </select>
+            
+            Selector 2
+            <select>
+                <option value="" disabled selected hidden>Select option...</option>
+                <option value="x">oof</option>
+                <option value="y">electric boogaloo</option>
+                <option value="z">mickey mouse</option>
+            </select>
+            
+            <div class="credits">
+            
+                Project made by Austin Farmer, Amber Moszenski, Caleb Quinn, Hayes Barber, and Josh Black
+                <br> <br> Interface created by Austin Farmer
+                <br> <br> Special thanks to Shawn Boudreaux
+            
+            </div>
     
         </div>
         
@@ -116,6 +145,12 @@
             <div class="section">
             
                 <p id="text">Test text!</p>
+            
+            </div>
+            
+            <div class="section">
+            
+            
             
             </div>
             
