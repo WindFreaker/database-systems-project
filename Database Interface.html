@@ -53,11 +53,12 @@
         }
         
         .content {
+            margin-right: 10px;
             margin-left: 200px;
             height: auto;
             display: grid;
-            grid-column-gap: 0px;
-            grid-row-gap: 0px;
+            grid-gap: 0px;
+            grid-template-columns: 1fr 1fr;
             flex-wrap: wrap;
         }
         
@@ -67,6 +68,7 @@
             border-radius: 10px;
             margin: 10px;
             margin-bottom: 0px;
+            margin-right: 0px;
             width: auto;
             height: 200px;
             flex: auto;
@@ -75,7 +77,21 @@
         .credits {
             padding: 12px;
             text-align: center;
+            text-wrap: balance;
             color: gray;
+            grid-column-start: span 2;
+        }
+        
+        @media (max-width: 1200px) {
+            
+            .content {
+                grid-template-columns: 1fr;
+            }
+            
+            .credits {
+                grid-column-start: span 1;
+            }
+            
         }
         
         @media (max-width: 700px) {
@@ -84,23 +100,12 @@
                 width: 100%;
                 height: auto;
                 position: relative;
+                float: none;
                 /* PUT SOMETHING HERE TO FIX THE SMALL WIDTH SCROLLBAR */
             }
             
             .content {
                 margin-left: 0px;
-            }
-            
-            .credits {
-                display: none;
-            }
-            
-        }
-        
-        @media (max-width: 400px) {
-            
-            .navbar {
-                float: none;
             }
             
         }
@@ -168,6 +173,12 @@
             <div class="section">
             
                 <header>Toost</header>
+            
+            </div>
+            
+            <div class="section">
+            
+                <header>"More Tables"</header>
             
             </div>
             
