@@ -17,6 +17,8 @@ function changeDatabase(selection) {
 
 function changeTable(selection) {
     
+    document.getElementById("tutorial").style.display = "none";
+    
     //for project tables
     switch(selection) {
             

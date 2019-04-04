@@ -1,0 +1,125 @@
+:root {
+    --background-color: rgb(32, 34, 37);
+    --main-color: rgb(47, 49, 54);
+    --lighter-color: rgb(54, 57, 63);
+    --input-color: rgb(72, 76, 82);
+}
+        
+::-webkit-scrollbar {
+    display: none; /* THIS TURNS THE SCROLLBAR ON/OFF */
+    width: 12px;
+    background-color: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px var(--input-color);
+    background-color: var(--main-color);
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: var(--background-color);
+}
+        
+body {
+    background-color: var(--background-color);
+    color: white;
+    margin: 0px;
+    padding: 0px;
+}
+        
+select {
+    background-color: var(--input-color);
+    color: white;
+    margin-bottom: 8px;
+    padding: 10px 5px;
+    width: 150px;
+    border: 0px;
+    border-radius: 3px;
+    outline: 0px;
+}
+        
+select:hover {
+    background-color: var(--lighter-color);
+}
+        
+header {
+    font-weight: bold;
+    text-align: center;
+}
+        
+.navbar {
+    width: 200px;
+    background-color: var(--main-color);
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+        
+.content {
+    margin-right: 10px;
+    margin-left: 200px;
+    height: auto;
+    display: grid;
+    grid-gap: 0px;
+    grid-template-columns: 1fr 1fr;
+    flex-wrap: wrap;
+}
+        
+.section {
+    background-color: var(--main-color);
+    padding: 12px;
+    border-radius: 10px;
+    margin: 10px;
+    margin-bottom: 0px;
+    margin-right: 0px;
+    width: auto;
+    height: 200px;
+    flex: auto;
+}
+        
+.credits {
+    padding: 12px;
+    text-align: center;
+    text-wrap: balance;
+    color: gray;
+    grid-column-start: span 2;
+}
+        
+@media (max-width: 1200px) {
+            
+    .content {
+        grid-template-columns: 1fr;
+    }
+            
+    .credits {
+        grid-column-start: span 1;
+    }
+            
+}
+        
+@media (max-width: 700px) {
+    
+    select {
+        margin-bottom: 0px;
+    }
+            
+    .navbar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        float: none;
+        display: grid;
+        grid-gap: 5px;
+        grid-template-columns: 1fr 1fr;
+    }
+            
+    .content {
+        margin-left: 0px;
+    }
+            
+}
