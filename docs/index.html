@@ -5,25 +5,27 @@
     <body>
         
         <script src="Interface UI.js"></script>
+        <script src="Database API.js"></script>
         <link rel="stylesheet" href="style.css">
     
         <div class="navbar">
     
-            <div id="databaseSelector">
+            <div id="dbSelectorDiv">
             
                 Select Database
-                <select onchange="changeDatabase(value)">
-                    <option value="" disabled selected hidden>Select database...</option>
+                <select id="dbSelector" onchange="changeDatabase(value)">
+                    <option value="reset" disabled selected hidden>Select database...</option>
                     <option value="project">CSCI 3432 Project</option>
+                    <option value="expiremental">Testing Database</option>
                 </select>
             
             </div>
             
-            <div id="tableSelector" style="visibility: hidden;">
+            <div id="tableSelectorDiv" style="display: none;">
             
                 Select Table
-                <select onchange="changeTable(value)">
-                    <option value="" disabled selected hidden>Select table...</option>
+                <select id="tableSelector" onchange="changeTable(value)">
+                    <option value="reset" disabled selected hidden>Select table...</option>
                     <option value="student">nothing</option>
                     <option value="athletes">electric boogaloo</option>
                     <option value="payments">mickey mouse</option>
@@ -35,55 +37,63 @@
         
         <div class="content">
             
-            <div class="section" id="tutorial">
+            <div class="section text" id="tutorial">
             
-                Welcome. To begin, please select a database and table from the navbar.
+                To begin, please select a database and table from the navbar.
             
             </div>
-        
-            <div class="section" id="info">
+            
+            <div id="mainSections" style="display: none;">
+            
+                <div class="section" id="info">
+                    <header>Information</header>
+            
                 
-                <header>Information</header>
-            
-            </div>
-            
-            <div class="section" id="modify">
                 
-               <header>Modify</header>
+                </div>
             
-                <p id="text">Test text!</p>
+                <div class="section" id="modify">
+                    <header>Modify Table</header>
+            
+                    <p id="text">Test text!</p>
+            
+                </div>
+            
+                <div class="section" id="console">
+                    <header>Direct SQL Console</header>
+            
+                    
+                    
+                </div>
+            
+                <div class="section">
+                    <header>Placeholder 1</header>
+                    
+                    
+                    
+                </div>
+            
+                <div class="section">
+                    <header>Placeholder 2</header>
+            
+                    
+                    
+                </div>
+            
+                <div class="section">
+                    <header>Placeholder 3</header>
+            
+                    
+                    
+                </div>
             
             </div>
             
-            <div class="section" id="brute">
+            <div class="section text" id="credits">
             
-                <header>Console</header>
-            
-            </div>
-            
-            <div class="section">
-            
-                <header>Something</header>
-            
-            </div>
-            
-            <div class="section">
-            
-                <header>Toost</header>
-            
-            </div>
-            
-            <div class="section">
-            
-                <header>"More Tables"</header>
-            
-            </div>
-            
-            <div class="credits">
-            
-                Group project for Dr. J's CSCI 3432-A class
+                Group Project for Dr. J's CSCI 3432-A Class
                 <br> Project by Austin Farmer, Amber Moszenski, Caleb Quinn, Hayes Barber, and Josh Black
-                <br> Web interface created by Austin Farmer (special thanks to Shawn Boudreaux)
+                <br> Web Interface Created by Austin Farmer (special thanks to Shawn Boudreaux)
             
             </div>
             

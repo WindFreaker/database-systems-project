@@ -1,8 +1,12 @@
 :root {
     --background-color: rgb(32, 34, 37);
     --main-color: rgb(47, 49, 54);
-    --lighter-color: rgb(54, 57, 63);
+    --lighter-color: rgb(56, 59, 65);
     --input-color: rgb(72, 76, 82);
+    --text-color: rgb(216, 217, 218);
+    --error-color: rgb(211, 68, 68);
+    --success-color: rgb(29, 185, 84);
+    --upload-color: rgb(108, 129, 203);
 }
         
 ::-webkit-scrollbar {
@@ -43,7 +47,7 @@ select {
 select:hover {
     background-color: var(--lighter-color);
 }
-        
+    
 header {
     font-weight: bold;
     text-align: center;
@@ -81,11 +85,19 @@ header {
     height: 200px;
     flex: auto;
 }
-        
-.credits {
-    padding: 12px;
+
+.section.text {
+    background-color: var(--background-color);
+    padding: 6px;
+    height: auto;
     text-align: center;
-    text-wrap: balance;
+}
+
+#tutorial {
+    grid-column-start: span 2;
+}
+        
+#credits {
     color: gray;
     grid-column-start: span 2;
 }
@@ -95,8 +107,12 @@ header {
     .content {
         grid-template-columns: 1fr;
     }
+    
+    #tutorial {
+        grid-column-start: span 1;
+    }
             
-    .credits {
+    #credits {
         grid-column-start: span 1;
     }
             
@@ -117,8 +133,13 @@ header {
         grid-gap: 5px;
         grid-template-columns: 1fr 1fr;
     }
-            
-    .content {
+         
+    #tutorial {
+        margin-left: 0px;
+    }
+
+    
+    #content {
         margin-left: 0px;
     }
             

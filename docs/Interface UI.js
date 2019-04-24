@@ -1,15 +1,25 @@
 function changeDatabase(selection) {
              
-    document.getElementById("tableSelector").style.visibility = "visible";
+    //always set the table selector to be operational
+    document.getElementById("tableSelectorDiv").style.display = "inherit";
+    document.getElementById("tableSelector").options[0].selected = "reset";
+    
+    //reverses the effects of selecting a table
+    document.getElementById("tutorial").style.display = "inherit";
+    document.getElementById("mainSections").style.display = "none";
     
     switch(selection) {
     
         case "project":
-            //something
+            
+            break;
+            
+        case "expiremental":
+            
             break;
                         
         default:
-            document.getElementById("dbInfo").innerHTML = "";
+            console.log("Selected database lacking hard-code.");
             
     }
                 
@@ -18,6 +28,7 @@ function changeDatabase(selection) {
 function changeTable(selection) {
     
     document.getElementById("tutorial").style.display = "none";
+    document.getElementById("mainSections").style.display = "inherit";
     
     //for project tables
     switch(selection) {
