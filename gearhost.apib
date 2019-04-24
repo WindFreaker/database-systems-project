@@ -1,0 +1,1634 @@
+FORMAT: 1A
+HOST: https://api.gearhost.com/v1/
+
+
+
+# GearHost API
+
+
+# API Introduction
+Welcome to the GearHost API documentation.
+
+The GearHost API allows you to manage CloudSites and resources in a simple, programmatic way using conventional HTTP requests. The endpoints are intuitive and powerful, allowing you to easily make calls to retrieve information or to execute actions.
+
+All of the functionality that you are familiar with in the GearHost control panel is also available through the API, allowing you to script the complex actions that your situation requires.
+
+The API documentation will start with a general overview about the design and technology that has been implemented, followed by reference information about specific endpoints.
+
+## API Endpoint
+
+GearHost API endpoint is `https://api.gearhost.com/v1/`
+
+## Requests
+Any tool that is fluent in HTTP can communicate with the API simply by requesting the correct URI. Requests should be made using the HTTPS protocol so that traffic is encrypted. The interface responds to different methods depending on the action required.
+
+### GET
+For simple retrieval of information about your account, CloudSites, or environment, you should use the GET method. The information you request will be returned to you as a JSON object.
+
+The attributes defined by the JSON object can be used to form additional requests. Any request using the GET method is read-only and will not affect any of the objects you are querying.
+
+### DELETE
+To destroy a resource and remove it from your account and environment, the DELETE method should be used. This will remove the specified object if it is found. If it is not found, the operation will return a response indicating that the object was not found.
+
+### PUT
+To update the information about a resource in your account, the PUT method is available.
+
+Like the DELETE Method, the PUT method is idempotent. It sets the state of the target using the provided values, regardless of their current values. Requests using the PUT method do not need to check the current attributes of the object.
+
+### POST
+To create a new object, your request should specify the POST method.
+
+The POST request includes all of the attributes necessary to create a new object. When you wish to create a new object, send a POST request to the target endpoint.
+
+
+## HTTP Statuses
+Along with the HTTP methods that the API responds to, it will also return standard HTTP statuses, including error codes.
+
+In the event of a problem, the status will contain the error code, while the body of the response will usually contain additional information about the problem that was encountered.
+
+In general, if the status returned is in the 200 range, it indicates that the request was fulfilled successfully and that no error was encountered.
+
+Return codes in the 400 range typically indicate that there was an issue with the request that was sent. Among other things, this could mean that you did not authenticate correctly, that you are requesting an action that you do not have authorization for, that the object you are requesting does not exist, or that your request is malformed.
+
+If you receive a status in the 500 range, this generally indicates a server-side problem. This means that we are having an issue on our end and cannot fulfill your request currently.
+
+## Responses
+When a request is successful, a response body will be sent back in the form of a JSON object.
+
+Inside of this JSON object, the resource root that was the target of the request will be set as the key. This will be the singular form of the word if the request operated on a single object, and the plural form of the word if a collection was processed.
+
+For example, if you send a GET request to `/cloudsites/{id}` you will get back an object with a key called `"cloudsite"`. However, if you send the GET request to the general collection at `/cloudsites`, you will get back an object with a key called `"cloudsites"`.
+
+The value of these keys will generally be a JSON object for a request on a single object and an array of objects for a request on a collection of objects.
+
+## Meta
+
+In addition to the main resource root, the response may also contain a `meta` object. This object contains information about the response itself.
+
+The `meta` object contains a total key that is set to the `total` number of objects returned by the request. This has implications on the `links` object and pagination.
+
+The `meta` object will only be displayed when it has a value.
+
+# Group Account
+
++ Attributes
+    + `email` (string) - The email the user has registered for GearHost with.
+    + `emailVerified` (boolean) - If true, the user has verified their account via email. False otherwise.
+    + `billingVerified` (boolean) - If true, the user has verified their billing information. False otherwise.
+    + `memberSince` (string) - Date when user account was registered.
+    
+
+## Account Information [/account]
+
+### Get Account Information [GET]
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
++ Response 200 (application/json)
+
+        {  
+            "account":{  
+                "email":"developer@gearhost.com",
+                "emailVerified":true,
+                "billingVerified":true,
+                "memberSince":"2014-11-03T19:44:56"
+            }
+        }
+
+
+## Actions Collection [/actions]
+
+Actions are records of events that have occurred on the resources in your account. These can be things like creating database or scaling CloudSite to a new plan.
+
+An action object is created every time one of these actions is initiated.
+
+Every action that creates an action object is available through this endpoint.
+
++ Attributes
+    + `id` (string) - A unique ID that can be used to identify and reference an action.
+    + `action` (string) - Description of an action.
+    + `ip` (string) - IP address from which action was initiated.
+    + `date` (string) - A time value given in ISO8601 combined date and time format that represents when the action was initiated.
+
+### List all Actinons [GET]
+To list all of the actions that have been executed on the current account, send a GET request to `/actions`.
+
+This will be the entire list of actions taken on your account, so it will be quite large. As with any large collection returned by the API, the results will be paginated with only 25 on each page by default.
+
+The results will be returned as a JSON object with an `actions` key. This will be set to an array filled with action objects containing the standard action attributes:
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
++ Response 200 (application/json)
+
+        {
+            "actions":[
+              {
+                 "id":"955cffd5-ae2c-44ab-8242-cd3fe7134a9f",
+                 "action":"Destroy CloudSite site2",
+                 "ip":"192.166.203.4",
+                 "date":"2014-12-26T05:31:47"
+              },
+              {
+                 "id":"50823622-f204-4b71-8a19-5a6a00b0ae37",
+                 "action":"CloudSite site1 config update",
+                 "ip":"::1",
+                 "date":"2014-12-25T14:06:03"
+              }
+           ],
+           "meta":{
+              "total":2
+           }
+        }
+        
+## Action [/actions/{id}]
+
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   
+ 
+
+### Retrieve an existing Action [GET]
+To retrieve a specific `action` object, send a GET request to `/actions/{id}`.
+
+The result will be a JSON object with an action key. This will be set to an action object containing the standard `action` attributes.
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
++ Response 200 (application/json)
+
+        {
+            "actions":[
+              {
+                 "id":"955cffd5-ae2c-44ab-8242-cd3fe7134a9f",
+                 "action":"Destroy CloudSite site2",
+                 "ip":"192.166.203.4",
+                 "date":"2014-12-26T05:31:47"
+              },
+              {
+                 "id":"50823622-f204-4b71-8a19-5a6a00b0ae37",
+                 "action":"CloudSite site1 config update",
+                 "ip":"::1",
+                 "date":"2014-12-25T14:06:03"
+              }
+           ],
+           "meta":{
+              "total":2
+           }
+        }
+        
+# Group CloudSites 
+
+By sending requests to the CloudSites endpoint, you can list, create, or delete CloudSites.
+
+Some of the attributes will have an object value.
+
++ Attributes
+    + `id` (string) - A unique identifier for each CloudSite instance. This is automatically generated upon CloudSite creation.
+    + `name` (string) - The name set for the CloudSite instance.
+    + `plan` (string) - The name of the current plan.
+    + `dateCreated` (string) - Date when CloudSite was created.
+    + `status` (string) - Status of the CloudSite (running, suspended, stopped).
+    + `intstances` (int) - A number of running instances.
+
+##CloudSites Collection [/cloudsites]
+
+### List All CloudSites [GET]
+To list all CloudSites in your account, send a GET request to `/cloudSites`.
+
+The response body will be a JSON object with a key of `cloudSites`. This will be set to an array containing objects representing each CloudSite. These will contain the standard CloudSite attributes.
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "cloudSites": [
+                {
+                    "dateCreated": "2014-12-10T11:02:09",
+                    "id": "f3973749-6747-4ce1-b5c3-535d83733f53",
+                    "intstances": 1,
+                    "name": "web1",
+                    "plan": "free",
+                    "status": "Running"
+                },
+                {
+                    "dateCreated": "2014-12-26T10:03:27",
+                    "id": "57b5a10e-5de3-4974-872c-6345ab179e20",
+                    "intstances": 1,
+                    "name": "web2",
+                    "plan": "standard",
+                    "status": "Running"
+                }
+                ]
+        }
+
+
+### Create a new CloudSite [POST]
+To create a new CloudSite, send a POST request to /cloudsites.
+
+The attribute values that must be set to successfully create a CloudSite are:
++ Attributes
+    + `name` (string) - The human-readable string which represents new cloud site name. Can contain letters, digits and dashes.
+    + `plan` (string) - The paln name (free, standard or reserved) to use for this CloudSite.
+
+A CloudSite will be created using the provided information.
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+            
+    + Body
+    
+            {
+                "name":"example",
+                "plan":"free"
+            }
++ Response 200 (application/json)
+
+        {
+            "success":true,
+            "message":"CloudSite added the to queue and will be built shortly."
+        }
+        
+        
+
+        
+# Group CloudSite Operations 
+
+CloudSite actions are tasks that can be executed on a CloudSite. These can be things like starting, stopping, scaling, etc.
+
+The specific actions are usually initiated by sending a POST request with the action and arguments as parameters.
+
+## Basic Operations [/cloudsites/{id}] 
+
+### Retrieve CloudSite [GET]
+To show an individual CloudSite, send a GET request to `/cloudsites/{id}`.
+
+The response will be a JSON object with a key called `cloudSite`. This will be set to a JSON object that contains the CloudSite's attributes.
+
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+           "cloudSite":{
+              "id":"f3973749-6747-4ce1-b5c3-535d83733f53",
+              "name":"example",
+              "plan":"free",
+              "dateCreated":"2014-12-10T11:02:09",
+              "status":"Running",
+              "intstances":1
+           }
+        }   
+        
+        
+
+### Delete CloudSite [DELETE]
+To delete a CloudSite, send a DELETE request to `/cloudSites/{id}`.
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "cloudSites": [
+                {
+                    "dateCreated": "2014-12-10T11:02:09",
+                    "id": "f3973749-6747-4ce1-b5c3-535d83733f53",
+                    "intstances": 1,
+                    "name": "web1",
+                    "plan": "free",
+                    "status": "Running"
+                },
+                {
+                    "dateCreated": "2014-12-26T10:03:27",
+                    "id": "57b5a10e-5de3-4974-872c-6345ab179e20",
+                    "intstances": 1,
+                    "name": "web2",
+                    "plan": "standard",
+                    "status": "Running"
+                }
+                ]
+        }
+        
+        
+        
+## Start CloudSite [/cloudsites/{id}/start] 
+
+### Start CloudSite [POST]
+To start CloudSite, send a POST request to `/cloudSites/{id}/start`.
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "success": true
+        }   
+        
+## Stop CloudSite [/cloudsites/{id}/stop] 
+
+### Stop CloudSite [POST]
+To stop CloudSite, send a POST request to `/cloudSites/{id}/stop`.
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "success": true
+        }   
+        
+## Restart CloudSite [/cloudsites/{id}/restart] 
+
+### Restart CloudSite [POST]
+To restart CloudSite, send a POST request to `/cloudSites/{id}/restart`.
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "success": true
+        } 
+        
+## Scale CloudSite [/cloudSites/{id}/scale/{newPlan}] 
+
+### Scale CloudSite [POST]
+To scale CloudSite, send a POST request to `/cloudSites/{id}/scale/{newPlan}`. `{newPlan}` parameter can be one of free/standard/reserved plans.
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + newPlan (required, string, `reserved`) ... New plan name (free/standard/reserved)
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "success": true
+        }   
+        
+## Set CloudSite Instances [/cloudSites/{id}/set-instances/{instances}] 
+
+### Set CloudSite Instances [POST]
+To change CloudSite instances (only for reserved plan), send a POST request to `/cloudSites/{id}/set-instances/{instances}`. `{instances}` can be any number in [1..10]
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + instances (required, string, `reserved`) ... Number of instances to use [1..10] 
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "success": true
+        }   
+        
+## Get CloudSite Stats [/cloudSites/{id}/stats] 
+
+### Get CloudSite Stats [GET]
+To get CloudSite current cpu/ram/storage/dataOut statistics send a GET request to `/cloudSites/{id}/stats`.
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "stats": {
+                "cputTime": 249,
+                "dataOut": 114397,
+                "ram": 38948864,
+                "storage": 0
+            }
+        } 
+        
+# Group CloudSite Config 
+
+You can use CloudSite config API to get/set your CloudSite options like connection strings/.NET framework version/etc
+
+The specific configuration calls are usually initiated by sending a POST request with the action and arguments as parameters.
+
+
+## Get .NET Framework [/cloudSites/{id}/config/net-framework-version] 
+
+### Get .NET Framework [GET]
+To get CloudSite .NET Framewrok version send a GET request to `/cloudSites/{id}/config/net-framework-version`.
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "config": {
+                "net_framework_version": "v4.5"
+            }
+        }
+    
+ 
+## Set .NET Framework [/cloudSites/{id}/config/net-framework-version/{version}] 
+
+### Set .NET Framework [POST]
+To set CloudSite .NET Framewrok version send a POST request to `/cloudSites/{id}/config/net-framework-version/{version}`. `{version}` can be "v3.5"/"v4.5"
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + version (required, string, `v3.5`) ... .NET Framework version to use
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "success": true
+        } 
+           
+## Get PHP Version [/cloudSites/{id}/config/php-version] 
+
+### Get PHP Version [GET]
+To get CloudSite PHP version send a GET request to `/cloudSites/{id}/config/net-framework-version`.
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "config": {
+                "php_version": "v5.5"
+            }
+        }
+    
+ 
+## Set PHP Version [/cloudSites/{id}/config/php-version/{version}] 
+
+### Set PHP Version [POST]
+To set CloudSite PHP version send a POST request to `/cloudSites/{id}/config/php-version/{version}`. `{version}` can be "off"/"5.3"/"5.4"/"5.5"
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + version (required, string, `v5.5`) ... PHP version to use
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "success": true
+        } 
+           
+
+## Get Pipeline Mode [/cloudSites/{id}/config/pipeline-mode] 
+
+### Get Pipeline Mode [GET]
+To get pipeline mode send a GET request to `/cloudSites/{id}/config/pipeline-mode`.
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "config": {
+                "php_version": "v5.5"
+            }
+        }
+    
+ 
+## Set Pipeline Mode [/cloudSites/{id}/config/pipeline-mode/{mode}] 
+
+### Set Pipeline Mode [POST]
+To set pipeline mode send a POST request to `/cloudSites/{id}/config/pipeline-mode/{mode}`. `{mode}` can be "classic"/"integrated"
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + mode (required, string, `integrated`) ... Pipeline mode to use
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "success": true
+        } 
+           
+
+
+## Get HTTP Server Logging [/cloudSites/{id}/config/http-server-logging] 
+
+### Get HTTP Server Logging [GET]
+To get HTTP server logging state send a GET request to `/cloudSites/{id}/config/http-server-logging`.
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "config": {
+                "http_server_logging": "on"
+            }
+        }
+    
+ 
+## Set HTTP Server Logging [/cloudSites/{id}/config/http-server-logging/{state}] 
+
+### Set HTTP Server Logging [POST]
+To set HTTP server logging state send a POST request to `/cloudSites/{id}/config/http-server-logging/{state}`. `{state}` can be "on"/"off"
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + state (required, string, `on`) ... Http Server Loggin state to use
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "success": true
+        } 
+           
+
+## Get Detailed Server Logging [/cloudSites/{id}/config/detailed-server-logging] 
+
+### Get Detailed Server Logging [GET]
+To get Detailed Server Logging state send a GET request to `/cloudSites/{id}/config/detailed-server-logging`.
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "config": {
+                "detailed_server_logging": "on"
+            }
+        }
+    
+ 
+## Set Detailed Server Logging [/cloudSites/{id}/config/detailed-server-logging/{state}] 
+
+### Set Detailed Server Logging [POST]
+To set Detailed Server Logging state send a POST request to `/cloudSites/{id}/config/detailed-server-logging/{state}`. `{state}` can be "on"/"off"
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + state (required, string, `on`) ... Detailed Server Logging state to use
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "success": true
+        } 
+           
+
+## Get Failed Requests Tracing [/cloudSites/{id}/config/failed-requests-tracing] 
+
+### Get Failed Requests Tracing [GET]
+To get Failed Requests Tracing state send a GET request to `/cloudSites/{id}/config/failed-requests-tracing`.
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "config": {
+                "failed_requests_tracing": "on"
+            }
+        }
+    
+ 
+## Set Failed Requests Tracing [/cloudSites/{id}/config/failed-requests-tracing/{state}] 
+
+### Set Failed Requests Tracing [POST]
+To set Failed Requests Tracing state send a POST request to `/cloudSites/{id}/config/failed-requests-tracing/{state}`. `{state}` can be "on"/"off"
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + state (required, string, `on`) ... Detailed Server Logging state to use
+    
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
+   
++ Response 200 (application/json)
+
+        {
+            "success": true
+        } 
+           
+
+
+## App Settings [/cloudSites/{id}/config/app-settings] 
+
+To get CloudSite App Settings send a GET request to `/cloudSites/{id}/config/app-settings`".
+
+To set CloudSite App Settings send a POST request to `/cloudSites/{id}/config/app-settings`. Request body should contain an array of `{key, value}` objects (see table bellow).
+
++ Attributes
+    + `key` (string) - name of the app parameter.
+    + `value` (string) - value of the app parameter.
+
+### Get App Settings [GET]
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+        {
+            "config": {
+                "app_settings": [
+                    {
+                        "key": "WEBSITE_NODE_DEFAULT_VERSION",
+                        "value": "0.10.5"
+                    }
+                ]
+            }
+        }  
+ 
+### Set App Settings [POST]
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+            
+    + Body
+    
+            [
+               {
+                  key:"paramName",
+                  value:"paramValue"
+               }
+            ]
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        } 
+           
+
+
+
+## Connection Strings [/cloudSites/{id}/config/connection-strings] 
+
+To get CloudSite Connection Strings send a GET request to `/cloudSites/{id}/config/connection-strings`".
+
+To set CloudSite Connection Strings send a POST request to `/cloudSites/{id}/config/connection-strings`. Request body should contain an array of objects (see table bellow).
+
++ Attributes
+    + `name` (string) - name of connection string.
+    + `connectionString` (string) - actual connection string.
+    + `type` (string) - type of sql server (mysql/mssql).
+
+### Get Connection Strings [GET]
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+        {
+            "config": {
+                "connection_strings": [
+                    {
+                        "connectionString": "Server=myServerAddress;Database=myDataBase;Trusted_Connection=True;",
+                        "name": "myCS",
+                        "type": "mssql"
+                    }
+                ]
+            }
+        }  
+ 
+### Set Connection Strings [POST]
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+            
+    + Body
+    
+            [
+                {
+                    "connectionString": "Server=myServerAddress;Database=myDataBase;Trusted_Connection=True;",
+                    "name": "myCS",
+                    "type": "mysql"
+                }
+            ]
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        } 
+           
+
+## Default Documents [/cloudSites/{id}/config/default-documents] 
+
+To get CloudSite Default Documents send a GET request to `/cloudSites/{id}/config/default-documents`".
+
+To set CloudSite Default Documents send a POST request to `/cloudSites/{id}/config/default-documents`. Request body should contain an array of strings.
+
+
+### Get Default Documents [GET]
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+        {
+            "config": {
+                "default_documents": ['index.html']
+            }
+        } 
+ 
+### Set Default Documents [POST]
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+            
+    + Body
+    
+            ["index.html"]
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        } 
+           
+## Handler Mappings [/cloudSites/{id}/config/handler-mappings] 
+
+To get Handler Mappings send a GET request to `/cloudSites/{id}/config/handler-mappings`.
+
+To set Handler Mappings send a POST request to `/cloudSites/{id}/config/handler-mappings`. Request body should contain an array of objects (see table bellow).
+
++ Attributes
+    + `extension` (string) - extension of the handler.
+    + `scriptProcessor` (string) - path to script processor.
+    + `arguments` (string) - optional arguments.
+
+
+### Get Handler Mappings [GET]
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+        {
+            "config": {
+                "handler_mappings": [
+                    {
+                        "arguments": "someArgument=1",
+                        "extension": "*.api",
+                        "scriptProcessor": "ApiProcessor.dll"
+                    }
+                ]
+            }
+        }
+ 
+### Set Handler Mappings [POST]
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+            
+    + Body
+    
+            [
+                {
+                    "arguments": "someArgument=1",
+                    "extension": "*.api",
+                    "scriptProcessor": "ApiProcessor.dll"
+                }
+            ]
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        } 
+           
+## Virtual Directories [/cloudSites/{id}/config/virtual-directories] 
+
+To get Virtual Directories send a GET request to `/cloudSites/{id}/config/virtual-directories`.
+
+To set Virtual Directories send a POST request to `/cloudSites/{id}/config/virtual-directories`. Request body should contain an array of objects (see table bellow).
+
++ Attributes
+    + `physicalPath` (string) - physical directory path.
+    + `virtualPath` (string) - virtual directory path.
+    + `virtualDirectories` (array) - array of inner virtual directories.
+
+
+### Get Virtual Directories [GET]
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+        {
+            "config": {
+                "virtual_directories": [
+                    {
+                        "physicalPath": "site\\wwwroot",
+                        "virtualDirectories": [],
+                        "virtualPath": "/"
+                    }
+                ]
+            }
+        }
+ 
+### Set Virtual Directories [POST]
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+            
+    + Body
+    
+            [{"physicalPath": "site\\wwwroot2","virtualDirectories": [],"virtualPath": "/"}]
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        } 
+           
+
+
+# Group CloudSite Domains
+
+You can use CloudSite Domains API to manipulate your domains and domains records.
+
+## Domains Collection [/cloudSites/{id}/domains]
+
+
++ Attributes
+    + `name` (string) - DNS zone name.
+    + `zoneFile` (string) - content of zoneFile.
+    + `dateCreated` (string) - date when domain was created in GearHost.
+
+### List Domains [GET]
+
+To get CloudSite domains send a GET request to `/cloudSites/{id}/domains`.
+
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+            {
+                "domains": [
+                    {
+                        "dateCreated": "2014-12-29T23:22:28",
+                        "name": "example.com",
+                        "zoneFile": "@                       IN  SOA ns1.gear.host. support.gearhost.com. (
+                        7            ; serial number
+                        1200         ; refresh
+                        600          ; retry
+                        1209600      ; expire
+                        3600       ) ; default TTL
+            @                       NS  ns1.gear.host.
+            @                       NS  ns2.gear.host.
+            @                       A   204.246.56.80
+            www                     CNAME   example.com."
+                    }
+                ]
+            }
+
+### Add Domain [POST]
+
+To add new CloudSite domain send a POST request to `/cloudSites/{id}/domains` with domain object (see table bellow).
+
++ Attributes
+    + `name` (string) - DNS zone name.
+
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+            
+    + Body
+    
+            {
+                "name": "example2.com"
+            }
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        }
+        
+        
+## Domain Operations [/cloudSites/{id}/domains/{domain}]
+
++ Attributes
+    + `name` (string) - DNS zone name.
+    + `zoneFile` (string) - content of zoneFile.
+    + `dateCreated` (string) - date when domain was created in GearHost.
+
+    
+### Domain Details [GET]
+
+To get CloudSite domain details send a GET request to `/cloudSites/{id}/domains/{domain}`.
+
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + domain (required, string, `example.com`) ... Domain name
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+            {
+                "domain": 
+                    {
+                        "dateCreated": "2014-12-29T23:22:28",
+                        "name": "example.com",
+                        "zoneFile": "@                       IN  SOA ns1.gear.host. support.gearhost.com. (
+                        7            ; serial number
+                        1200         ; refresh
+                        600          ; retry
+                        1209600      ; expire
+                        3600       ) ; default TTL
+            @                       NS  ns1.gear.host.
+            @                       NS  ns2.gear.host.
+            @                       A   204.246.56.80
+            www                     CNAME   example.com."
+                    }
+            }
+            
+            
+### Delete Domain [DELETE]
+
+To delete CloudSite domain send a DELETE request to `/cloudSites/{id}/domains/{domain}`.
+
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + domain (required, string, `example.com`) ... Domain name
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        }
+        
+      
+## Domain Records Collection [/cloudSites/{id}/domains/{domain}/records]
+
++ Attributes
+    + `id` (string) - A unique identifier for each domain record.
+    + `type` (string) - The type of the DNS record (ex: A, CNAME, TXT, ...).
+    + `name` (string) - The name to use for the DNS record.
+    + `record` (string) - The value to use for the DNS record.
+    + `priority` (number) - The priority for SRV and MX records.
+    + `port` (number) - The port for SRV records.
+    + `weight` (number) - The weight for SRV records.
+    
+
+### List Domain Records [GET]
+
+To get domain records send a GET request to `/cloudSites/{id}/domains/{domain}/records`.  
+
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + domain (required, string, `example.com`) ... Domain name
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+        {
+            "records": [
+                {
+                    "id": "8a0e083b-2eb8-47b8-a70b-0a3ae1c65856",
+                    "name": "example.com",
+                    "port": null,
+                    "priority": null,
+                    "record": "ns2.gear.host",
+                    "type": "NS",
+                    "weight": null
+                },
+                {
+                    "id": "c481fe2a-3ec6-4583-856e-689d00237753",
+                    "name": "example.com",
+                    "port": null,
+                    "priority": null,
+                    "record": "204.246.56.80",
+                    "type": "A",
+                    "weight": null
+                },
+                {
+                    "id": "50fb9418-aaa2-40b7-aa83-7dd8a005e9f0",
+                    "name": "www.example.com",
+                    "port": null,
+                    "priority": null,
+                    "record": "example.com",
+                    "type": "CNAME",
+                    "weight": null
+                },
+                {
+                    "id": "6510d8e7-ebac-4bc0-87cf-d964972cee78",
+                    "name": "example.com",
+                    "port": null,
+                    "priority": null,
+                    "record": "ns1.gear.host",
+                    "type": "NS",
+                    "weight": null
+                }
+            ]
+        }
+        
+### Add Domain Record [POST]
+
+To add domain record send a POST request to `/cloudSites/{id}/domains/{domain}/records` with record object (see table bellow).
+
++ Attributes
+    + `type` (string) - The type of the DNS record (ex: A, CNAME, TXT, ...).
+    + `name` (string) - The name to use for the DNS record.
+    + `record` (string) - The value to use for the DNS record.
+    + `priority` (number) - The priority for SRV and MX records.
+    + `port` (number) - The port for SRV records.
+    + `weight` (number) - The weight for SRV records.
+
++ Parameters
+ 
+    + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+    + domain (required, string, `example.com`) ... Domain name
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+            
+    + Body
+    
+            {
+                "name": "example.com",
+                "port": null,
+                "priority": null,
+                "record": "ns1.gear.host",
+                "type": "NS",
+                "weight": null
+            }
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        }
+        
+        
+        
+## Domain Record Operations [/cloudSites/{id}/domains/{domain}/records/{recordId}]
+
++ Attributes
+    + `id` (string) - A unique identifier for each domain record.
+    + `type` (string) - The type of the DNS record (ex: A, CNAME, TXT, ...).
+    + `name` (string) - The name to use for the DNS record.
+    + `record` (string) - The value to use for the DNS record.
+    + `priority` (number) - The priority for SRV and MX records.
+    + `port` (number) - The port for SRV records.
+    + `weight` (number) - The weight for SRV records.
+
+    
+### Domain Details [GET]
+
+To get domain record details send a GET request to `/cloudSites/{id}/domains/{domain}/records/{recordId}`
+
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + domain (required, string, `example.com`) ... Domain name
+   + recordId (required, string, `6510d8e7-ebac-4bc0-87cf-d964972cee78`) ... The domain record id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+            {
+                "record": {
+                    "id": "6510d8e7-ebac-4bc0-87cf-d964972cee78",
+                    "name": "example.com",
+                    "port": null,
+                    "priority": null,
+                    "record": "ns1.gear.host",
+                    "type": "NS",
+                    "weight": null
+                }
+            }
+            
+            
+### Delete Domain Record [DELETE]
+
+To delete domain record details send a DELETE request to `/cloudSites/{id}/domains/{domain}/records/{recordId}`
+
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The CloudSite id
+   + domain (required, string, `example.com`) ... Domain name
+   + recordId (required, string, `6510d8e7-ebac-4bc0-87cf-d964972cee78`) ... The domain record id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        }
+        
+      
+# Group Databases
+
+You can use Databases API to manipulate your databases and database users.
+
+## Databases Collection [/databases]
+
+
++ Attributes
+    + `id` (string) - unique database identifier.
+    + `name` (string) - database name.
+    + `plan` (string) - database plan (free/standard).
+    + `type` (string) - database type (mysql/mssql).
+    + `size` (number) - database size in bytes.
+    + `locked` (boolean) - is database locked (because of size usage limit/payment delayed).
+    + `dateCreated` (string) - date when database was created in GearHost.
+
+### List Databases [GET]
+
+To get list of your databases send a GET request to `/databases`.
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+            {
+                "databases": [
+                    {
+                        "dateCreated": "2015-01-09T06:07:49",
+                        "id": "fc71279a-94bf-46e6-859f-88dc6e005393",
+                        "locked": false,
+                        "name": "demo2",
+                        "plan": "free",
+                        "size": 0,
+                        "type": "mysql"
+                    }
+                ]
+            }
+
+### Add Database [POST]
+
+To add new database send a POST request to `/databases` with database object (see table bellow).
+
++ Attributes
+    + `name` (string) - database name.
+    + `plan` (string) - database plan (free/standard).
+    + `type` (string) - database type (mysql/mssql).
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+            
+    + Body
+
+            {
+                "name": "demo3",
+                "plan": "free",
+                "type": "mysql"
+            }
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        }
+        
+## Database Operations [/databases/{id}]
+
++ Attributes
+    + `id` (string) - unique database identifier.
+    + `name` (string) - database name.
+    + `plan` (string) - database plan (free/standard).
+    + `type` (string) - database type (mysql/mssql).
+    + `size` (number) - database size in bytes.
+    + `locked` (boolean) - is database locked (because of size usage limit/payment delayed).
+    + `dateCreated` (string) - date when database was created in GearHost.
+
+    
+### Database Details [GET]
+
+To get database details send a GET request to `/databases/{id}`.
+
++ Parameters
+ 
+   + id (required, string, `fc71279a-94bf-46e6-859f-88dc6e005393`) ... The database id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+            {
+                "database": {
+                    "dateCreated": "2015-01-09T06:07:49",
+                    "id": "fc71279a-94bf-46e6-859f-88dc6e005393",
+                    "locked": false,
+                    "name": "demo2",
+                    "plan": "free",
+                    "size": 0,
+                    "type": "mysql"
+                }
+            }
+            
+            
+### Delete Database [DELETE]
+
+To delete database send a DELETE request to `/databases/{id}`.
+
++ Parameters
+ 
+   + id (required, string, `fc71279a-94bf-46e6-859f-88dc6e005393`) ... The database id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        }
+        
+        
+## Database Backups [/databases/{id}/backup]
+
+### Exec Backup [GET]
+
+To execute database backup send a GET request to `/databases/{id}/backup`.
++ Parameters
+ 
+   + id (required, string, `fc71279a-94bf-46e6-859f-88dc6e005393`) ... The database id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/octet-stream)
+
+            {
+            }
+
+          
+## Database Users Collection [/databases/{id}/users]
+
+
++ Attributes
+    + `id` (string) - unique database user identifier.
+    + `userName` (string) - database user login.
+    + `password` (string) - database user password.
+    + `permission` (string) - database user permissions (read/write).
+    + `dateCreated` (string) - date when database user was created.
+
+### List Database Users [GET]
+
+To get database users send a GET request to `/databases/{id}/users`.
++ Parameters
+ 
+   + id (required, string, `fc71279a-94bf-46e6-859f-88dc6e005393`) ... The database id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+            {
+                "users": [
+                    {
+                        "dateCreated": "2015-01-09T07:07:49",
+                        "id": "3dd1c0b8-7151-4195-8fbc-1fe5ec609f29",
+                        "password": "$somePassword$",
+                        "permission": "write",
+                        "userName": "demo2"
+                    }
+                ]
+            }
+
+### Add Database User [POST]
+
+To add database user send a POST request to `/databases/{id}/users` with user object (see table bellow).
++ Attributes
+    + `userName` (string) - database user login.
+    + `password` (string) - database user password.
+    + `permission` (string) - database user permissions (read/write).
+
++ Parameters
+ 
+   + id (required, string, `fc71279a-94bf-46e6-859f-88dc6e005393`) ... The database id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+            
+    + Body
+
+            {"password": "$somePassword$","permission": "write","userName": "demo3"}
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        }
+        
+## Database User Operations [/databases/{id}/users/{userId}]
+
++ Attributes
+    + `id` (string) - unique database identifier.
+    + `name` (string) - database name.
+    + `plan` (string) - database plan (free/standard).
+    + `type` (string) - database type (mysql/mssql).
+    + `size` (number) - database size in bytes.
+    + `locked` (boolean) - is database locked (because of size usage limit/payment delayed).
+    + `dateCreated` (string) - date when database was created in GearHost.
+
+    
+### Database User Details [GET]
+
+To get database user details send a GET request to `/databases/{id}/users/{userId}`.
+
++ Parameters
+ 
+   + id (required, string, `fc71279a-94bf-46e6-859f-88dc6e005393`) ... The database id
+   + userId (required, string, `3dd1c0b8-7151-4195-8fbc-1fe5ec609f29`) ... The database user id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+            {
+                "user": {
+                    "dateCreated": "2015-01-09T07:07:49",
+                    "id": "3dd1c0b8-7151-4195-8fbc-1fe5ec609f29",
+                    "password": "$somePassword$",
+                    "permission": "write",
+                    "userName": "demo2"
+                }
+            }
+            
+            
+### Delete Database User [DELETE]
+
+To delete database user send a DELETE request to `/databases/{id}/users/{userId}`.
+
++ Parameters
+ 
+   + id (required, string, `f3973749-6747-4ce1-b5c3-535d83733f53`) ... The database id
+   + userId (required, string, `3dd1c0b8-7151-4195-8fbc-1fe5ec609f29`) ... The database user id
+
++ Request (application/json)
+    + Headers
+
+            Authorization: bearer [API-KEY]
+
++ Response 200 (application/json)
+
+        {
+            "success": true
+        }
+        
+          
