@@ -11,19 +11,6 @@
         
 ::-webkit-scrollbar {
     display: none; /* THIS TURNS THE SCROLLBAR ON/OFF */
-    width: 12px;
-    background-color: var(--background-color);
-}
-
-::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px var(--input-color);
-    background-color: var(--main-color);
-}
-
-::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background-color: var(--background-color);
 }
         
 body {
@@ -34,7 +21,7 @@ body {
 }
         
 select {
-    background-color: var(--input-color);
+    background-color: var(--lighter-color);
     color: white;
     margin-bottom: 8px;
     padding: 10px 5px;
@@ -45,12 +32,36 @@ select {
 }
         
 select:hover {
-    background-color: var(--lighter-color);
+    background-color: var(--input-color);
 }
     
 header {
     font-weight: bold;
     text-align: center;
+    margin-bottom: 4px;
+}
+
+textarea {
+    background-color: var(--lighter-color);
+    color: white;
+    border: none;
+    width: 100%;
+    height: 150px;
+    resize: none;
+}
+
+textarea:focus {
+    background-color: var(--input-color);
+    outline: none;
+}
+
+button {
+    background-color: var(--upload-color);
+    outline: none;
+    padding: 5px;
+    color: white;
+    border: none;
+    width: 100%;
 }
         
 .navbar {
@@ -69,7 +80,7 @@ header {
     margin-left: 200px;
     height: auto;
     display: grid;
-    grid-gap: 0px;
+    grid-gap: 0;
     grid-template-columns: 1fr 1fr;
     flex-wrap: wrap;
 }
@@ -91,15 +102,12 @@ header {
     padding: 6px;
     height: auto;
     text-align: center;
-}
-
-#tutorial {
+    
     grid-column-start: span 2;
 }
         
 #credits {
     color: gray;
-    grid-column-start: span 2;
 }
         
 @media (max-width: 1200px) {
@@ -108,17 +116,17 @@ header {
         grid-template-columns: 1fr;
     }
     
-    #tutorial {
-        grid-column-start: span 1;
-    }
-            
-    #credits {
+    .section.text {
         grid-column-start: span 1;
     }
             
 }
         
 @media (max-width: 700px) {
+    
+    .content {
+        margin-left: 0;
+    }
     
     select {
         margin-bottom: 0px;
@@ -132,15 +140,6 @@ header {
         display: grid;
         grid-gap: 5px;
         grid-template-columns: 1fr 1fr;
-    }
-         
-    #tutorial {
-        margin-left: 0px;
-    }
-
-    
-    #content {
-        margin-left: 0px;
     }
             
 }

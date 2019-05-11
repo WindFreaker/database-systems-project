@@ -1,21 +1,25 @@
-var express = require('express');
-var app = express();
-var sql = require('mssql');
+var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
+var names;
 
-var config = {
-
-    user: "csci3432",
-    password: "Vb764wo?!gBD",
-    server: "den1.mssql8.gear.host",
-    database: "help"
-
+function consoleTA() {
+    
+    var command = document.getElementById("consoleInput").value;
+    
+    db.transaction(function (tx) {
+        
+        console.log(tx.executeSql(command));
+        
+    });
+    
 }
 
-var server = app.listen(8081, function () {
+function getNames() {
     
-    var host = server.address().address
-    var port = server.address().port
+    db.transaction(function (tx) {
+        
+        tx.executeSql("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE Test = N'Test';");
+        console.log("help me god");
+        
+    });
     
-    console.log("app listening at http://%s:%s", host, port)
-    
-});
+}

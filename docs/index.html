@@ -26,9 +26,20 @@
                 Select Table
                 <select id="tableSelector" onchange="changeTable(value)">
                     <option value="reset" disabled selected hidden>Select table...</option>
-                    <option value="student">nothing</option>
-                    <option value="athletes">electric boogaloo</option>
-                    <option value="payments">mickey mouse</option>
+                    <option value="building">Building</option>
+                    <option value="building_class">ClassBuilding</option>
+                    <option value="course">Course_Sections</option>
+                    <option value="department">Department</option>
+                    <option value="dorms">Dorms</option>
+                    <option value="enrollment">Enrollment</option>
+                    <option value="tuition">Tuition</option>
+                    <option value="financial">Financial_Aid</option>
+                    <option value="membership">Membership</option>
+                    <option value="organization">Organization</option>
+                    <option value="organization_student">StudentOrgs</option>
+                    <option value="professor">Professor</option>
+                    <option value="sport">Sports</option>
+                    <option value="student">Student</option>
                 </select>
             
             </div>
@@ -43,50 +54,38 @@
             
             </div>
             
-            <div id="mainSections" style="display: none;">
             
-                <div class="section" id="info">
-                    <header>Information</header>
+            <div class="section" id="info" style="display: none;">
+                <header>Information</header>
+            
+                <button onclick="getNames()">Get Column Names</button>
+                
+            </div>
+            
+            <div class="section" id="search" style="display: none;">
+                <header>Search</header>
             
                 
                 
-                </div>
+            </div>
             
-                <div class="section" id="modify">
-                    <header>Modify Table</header>
+            <div class="section" id="modify" style="display: none;">
+                <header>Modify Table</header>
             
-                    <p id="text">Test text!</p>
+                <p id="text">Test text!</p>
             
-                </div>
+            </div>
             
-                <div class="section" id="console">
-                    <header>Direct SQL Console</header>
+            <div class="section" id="console" style="display: none;">
+                <header>Direct SQL Console</header>
             
+                <form action="console.php" method="post">
+                
+                    <textarea id="consoleInput"></textarea>
+                    <input type="submit" value="Submit" />
+                
+                </form>
                     
-                    
-                </div>
-            
-                <div class="section">
-                    <header>Placeholder 1</header>
-                    
-                    
-                    
-                </div>
-            
-                <div class="section">
-                    <header>Placeholder 2</header>
-            
-                    
-                    
-                </div>
-            
-                <div class="section">
-                    <header>Placeholder 3</header>
-            
-                    
-                    
-                </div>
-            
             </div>
             
             <div class="section text" id="credits">
